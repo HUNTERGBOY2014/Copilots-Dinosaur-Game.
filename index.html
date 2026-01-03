@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dino Game</title>
+<style>
+    body {
+        background: #f7f7f7;
+        display: flex;
+        justify-content: center;
+        margin-top: 100px;
+        font-family: Arial;
+    }
+
+    #game {
+        width: 800px;
+        height: 200px;
+        background: white;
+        border: 2px solid #333;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #dino {
+        width: 40px;
+        height: 40px;
+        background: #333;
+        position: absolute;
+        bottom: 0;
+        left: 50px;
+    }
+
+    #cactus {
+        width: 30px;
+        height: 50px;
+        background: green;
+        position: absolute;
+        bottom: 0;
+        right: -50px;
+    }
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="dino"></div>
+    <div id="cactus"></div>
+</div>
+
+<script>
+    const dino = document.getElementById("dino");
+    const cactus = document.getElementById("cactus");
+
+    let isJumping = false;
+    let jumpHeight = 0;
+
+    document.addEventListener("keydown", () => {
+        if (!isJumping) jump();
+    });
+
+    function jump() {
+        isJumping = true;
+
+        let upInterval = setInterval(() => {
+            if (jumpHeight >= 120) {
+                clearInterval(upInterval);
+
+                let downInterval = setInterval(() => {
+                    if (jumpHeight <= 0) {
+                        clearInterval(downInterval);
+                        isJumping = false;
+                    }
+                    jumpHeight -= 5;
+                    dino.style.bottom = jumpHeight + "px";
+                }, 20);
+
+            } else {
+                jumpHeight += 5;
+                dino.style.bottom = jumpHeight + "px";
+            }
+        }, 20);
+    }
+
+    function moveCactus() {
+        let cactusX = 800;
+
+        setInterval(() => {
+            cactusX -= 5;
+            cactus.style.right = (800 - cactusX) + "px";
+
+            // Reset cactus when off screen
+            if (cactusX < -50) cactusX = 800;
+
+            // Collision detection
+            let dinoBottom = jumpHeight;
+            if (cactusX < 90 && cactusX > 50 && dinoBottom < 40) {
+                alert("Game Over!");
+                cactusX = 800;
+            }
+        }, 20);
+    }
+
+    moveCactus();
+</script>
+
+</body>
+</html>
